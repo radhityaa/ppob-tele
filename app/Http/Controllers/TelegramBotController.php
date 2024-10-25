@@ -147,25 +147,6 @@ class TelegramBotController extends Controller
                         $nominal = substr($message, strlen('deposit.')); // Mengambil substring setelah 'deposit.'
                         $user = User::where('chat_id', $chatId)->first();
 
-                        $checkDeposit = Deposit::where('user_id', $user->id)->where('status', 'unpaid')->first();
-
-                        if ($checkDeposit) {
-                            $this->telegram->sendMessage([
-                                'chat_id' => $chatId,
-                                'text' => 'Terdapat deposit yang belum dibayarkan. Silahkan bayar terlebih dahulu.',
-                                'reply_to_message_id' => $messageId,
-                                'reply_markup' => json_encode([
-                                    'inline_keyboard' => [
-                                        [
-                                            ['text' => 'Bayar Sekarang', 'url' => $checkDeposit->checkout_url],
-                                            ['text' => 'Detail Deposit', 'callback_data' => 'detail_deposit.' . $checkDeposit->invoice],
-                                            ['text' => 'Cancel Deposit', 'callback_data' => 'cancel.deposit.' . $checkDeposit->invoice],
-                                        ]
-                                    ]
-                                ])
-                            ]);
-                        }
-
                         if (is_numeric($nominal) && $nominal >= 10000) {
                             $paymentMethod = PaymentMethod::where('code', 'QRIS2')->first();
 
