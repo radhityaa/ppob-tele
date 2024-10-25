@@ -52,7 +52,7 @@ class TelegramBotController extends Controller
                 $registrationState->delete();
                 $this->sendMessage([
                     'chat_id' => $chatId,
-                    'text' => 'Pendaftaran anda sudah kadaluarsa. Silakan ketik /daftar untuk memulai kembali.',
+                    'text' => 'Pendaftaran anda sudah kadaluarsa. Silahkan ketik /daftar untuk memulai kembali.',
                     'reply_to_message_id' => $messageId,
                 ]);
                 return;
@@ -66,7 +66,7 @@ class TelegramBotController extends Controller
 
                 $this->telegram->sendMessage([
                     'chat_id' => $chatId,
-                    'text' => 'Selamat datang! Silakan masukkan nama Anda:',
+                    'text' => 'Selamat datang! Silahkan masukkan nama Anda:',
                     'reply_to_message_id' => $messageId,
                 ]);
             } elseif ($registrationState && $registrationState->step === 'name') {
@@ -82,7 +82,7 @@ class TelegramBotController extends Controller
 
                 $this->telegram->sendMessage([
                     'chat_id' => $chatId,
-                    'text' => 'Nomor telepon diterima. Silakan masukkan nama toko Anda:',
+                    'text' => 'Nomor telepon diterima. Silahkan masukkan nama toko Anda:',
                     'reply_to_message_id' => $messageId,
                 ]);
             } elseif ($registrationState && $registrationState->step === 'shop_name') {
@@ -110,7 +110,24 @@ class TelegramBotController extends Controller
                         $keyboard = Keyboard::make()
                             ->row(
                                 [
+                                    Keyboard::button('Pembelian'),
+                                    Keyboard::button('Status Pembelian'),
+                                ]
+                            )
+                            ->row(
+                                [
+                                    Keyboard::button('Token PLN'),
+                                    Keyboard::button('Riwayat Pembelian'),
+                                ]
+                            )
+                            ->row(
+                                [
                                     Keyboard::button('Cek Saldo'),
+                                    Keyboard::button('Deposit'),
+                                ]
+                            )
+                            ->row(
+                                [
                                     Keyboard::button('Bantuan'),
                                 ]
                             );
@@ -140,8 +157,15 @@ class TelegramBotController extends Controller
                     } else if ($message === 'deposit') {
                         $this->telegram->sendMessage([
                             'chat_id' => $chatId,
-                            'text' => 'Silakan kirim jumlah deposit dengan format: deposit.<nominal>. Contoh: deposit.10000',
+                            'text' => 'Silahkan kirim jumlah deposit dengan format: deposit.<nominal>. Contoh: deposit.10000',
                             'reply_to_message_id' => $messageId,
+                            'reply_markup' => json_encode([
+                                'inline_keyboard' => [
+                                    [
+                                        ['text' => 'Riwayat Deposit', 'callback_data' => 'riwayat deposit'],
+                                    ]
+                                ]
+                            ])
                         ]);
                     } else if (strpos($message, 'deposit.') === 0) {
                         $nominal = substr($message, strlen('deposit.')); // Mengambil substring setelah 'deposit.'
@@ -151,7 +175,7 @@ class TelegramBotController extends Controller
                         if ($pendingDeposit) {
                             $this->telegram->sendMessage([
                                 'chat_id' => $chatId,
-                                'text' => 'Anda masih memiliki deposit yang belum dibayar. Silakan selesaikan deposit tersebut sebelum melakukan deposit baru.',
+                                'text' => 'Anda masih memiliki deposit yang belum dibayar. Silahkan selesaikan deposit tersebut sebelum melakukan deposit baru.',
                                 'reply_to_message_id' => $messageId,
                             ]);
                             return;
@@ -246,7 +270,7 @@ class TelegramBotController extends Controller
                         } else {
                             $this->telegram->sendMessage([
                                 'chat_id' => $chatId,
-                                'text' => 'Nominal tidak valid. Silakan kirim dengan format: deposit.<nominal>',
+                                'text' => 'Nominal tidak valid. Silahkan kirim dengan format: deposit.<nominal>',
                                 'reply_to_message_id' => $messageId,
                             ]);
                             return;
@@ -272,6 +296,30 @@ class TelegramBotController extends Controller
                                 'reply_to_message_id' => $messageId,
                             ]);
                         }
+                    } else if ($message === 'pembelian') {
+                        $this->telegram->sendMessage([
+                            'chat_id' => $chatId,
+                            'text' => "Untuk melakukan pembelian produk, Silahkan kirim dengan format: \n\n<code>.<tujuan>\n\nContoh: tri1.081234567890",
+                            'reply_to_message_id' => $messageId,
+                        ]);
+                    } else if ($message === 'status pembelian') {
+                        $this->telegram->sendMessage([
+                            'chat_id' => $chatId,
+                            'text' => "Untuk melakukan pengecekan status pembelian terakhir, Silahkan kirim dengan format: \n\nstatus.<tujuan>\n\nContoh: status.081234567890",
+                            'reply_to_message_id' => $messageId,
+                        ]);
+                    } else if ($message === 'riwayat pembelian') {
+                        $this->telegram->sendMessage([
+                            'chat_id' => $chatId,
+                            'text' => "Berikut daftar riwayat pembelian 20 terakhir.\n\nComming Soon",
+                            'reply_to_message_id' => $messageId,
+                        ]);
+                    } else if ($message === 'token pln') {
+                        $this->telegram->sendMessage([
+                            'chat_id' => $chatId,
+                            'text' => "Comming Soon",
+                            'reply_to_message_id' => $messageId,
+                        ]);
                     } else {
                         $this->telegram->sendMessage([
                             'chat_id' => $chatId,
@@ -283,7 +331,7 @@ class TelegramBotController extends Controller
                     // Jika pengguna tidak terdaftar di database
                     $this->telegram->sendMessage([
                         'chat_id' => $chatId,
-                        'text' => 'Nomor Anda tidak terdaftar di sistem kami. Silakan ketik /daftar untuk mendaftar.',
+                        'text' => 'Nomor Anda tidak terdaftar di sistem kami. Silahkan ketik /daftar untuk mendaftar.',
                         'reply_to_message_id' => $messageId,
                     ]);
                 }
@@ -302,7 +350,7 @@ class TelegramBotController extends Controller
             if ($callbackData === 'deposit') {
                 $this->telegram->sendMessage([
                     'chat_id' => $chatId,
-                    'text' => 'Silakan kirim jumlah deposit dengan format: deposit.<nominal>. Contoh: deposit.10000',
+                    'text' => 'Silahkan kirim jumlah deposit dengan format: deposit.<nominal>. Contoh: deposit.10000',
                     'reply_to_message_id' => $messageId,
                 ]);
             } else if ($callbackData === 'riwayat deposit') {
@@ -444,7 +492,7 @@ class TelegramBotController extends Controller
                 // Tangkap error dan kirim pesan kepada pengguna
                 $this->telegram->sendMessage([
                     'chat_id' => $chatId,
-                    'text' => 'Maaf, terjadi kesalahan atau permintaan Anda telah kedaluwarsa. Silakan coba lagi.',
+                    'text' => 'Maaf, terjadi kesalahan atau permintaan Anda telah kedaluwarsa. Silahkan coba lagi.',
                 ]);
             }
         }
