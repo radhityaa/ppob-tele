@@ -184,6 +184,8 @@ class TelegramBotController extends Controller
                                     'text' => 'Gagal Deposit',
                                     'reply_to_message_id' => $messageId,
                                 ]);
+
+                                return;
                             }
 
                             $expired_time = Carbon::createFromTimestamp($response->data->expired_time)->toDateTimeString();
@@ -223,19 +225,31 @@ class TelegramBotController extends Controller
                                 'chat_id' => $chatId,
                                 'text' => "Hallo, $user->name.\nTerima Kasih telah melakukan deposit.\nDetail Deposit:\n\n- Invoice: $result->invoice.\n- Metode: $result->method.\n- Nominal: $nominalFormatted.\n- Fee: $feeFormatted.\n- Total Harus Dibayarkan: $totalFormatted.\n- Saldo Diterima: $amountReceivedFormatted.\n- Expired: $exp.\n\n$pay\n\nHarap Dibayarkan sebelum waktu expired\nUntuk batal deposit ketik: batal.deposit.<invoice>\n\nTerima Kasih.",
                                 'reply_to_message_id' => $messageId,
+                                'reply_markup' => json_encode([
+                                    'inline_keyboard' => [
+                                        [
+                                            ['text' => 'Bayar Sekarang', 'url' => $result->checkout_url],
+                                            ['text' => 'Cancel Deposit', 'callback_data' => 'cancel.deposit.' . $result->invoice],
+                                        ]
+                                    ]
+                                ])
                             ]);
+                            return;
                         } else if ($nominal < 10000) {
                             $this->telegram->sendMessage([
                                 'chat_id' => $chatId,
                                 'text' => 'Minimal Deposit Rp.10.000',
                                 'reply_to_message_id' => $messageId,
                             ]);
+
+                            return;
                         } else {
                             $this->telegram->sendMessage([
                                 'chat_id' => $chatId,
                                 'text' => 'Nominal tidak valid. Silakan kirim dengan format: deposit.<nominal>',
                                 'reply_to_message_id' => $messageId,
                             ]);
+                            return;
                         }
                     } else if (strpos($message, 'batal.deposit.') === 0) {
                         $invoice = substr($message, strlen('batal.deposit.')); // Mengambil substring setelah 'batal.deposit.'
