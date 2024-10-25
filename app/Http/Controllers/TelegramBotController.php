@@ -146,6 +146,16 @@ class TelegramBotController extends Controller
                     } else if (strpos($message, 'deposit.') === 0) {
                         $nominal = substr($message, strlen('deposit.')); // Mengambil substring setelah 'deposit.'
                         $user = User::where('chat_id', $chatId)->first();
+                        $pendingDeposit = Deposit::where('user_id', $user->id)->where('status', 'unpaid')->exists();
+
+                        if ($pendingDeposit) {
+                            $this->telegram->sendMessage([
+                                'chat_id' => $chatId,
+                                'text' => 'Anda masih memiliki deposit yang belum dibayar. Silakan selesaikan deposit tersebut sebelum melakukan deposit baru.',
+                                'reply_to_message_id' => $messageId,
+                            ]);
+                            return;
+                        }
 
                         if (is_numeric($nominal) && $nominal >= 10000) {
                             $paymentMethod = PaymentMethod::where('code', 'QRIS2')->first();
@@ -214,7 +224,7 @@ class TelegramBotController extends Controller
                                 'text' => "Hallo, $user->name.\nTerima Kasih telah melakukan deposit.\nDetail Deposit:\n\n- Invoice: $result->invoice.\n- Metode: $result->method.\n- Nominal: $nominalFormatted.\n- Fee: $feeFormatted.\n- Total Harus Dibayarkan: $totalFormatted.\n- Saldo Diterima: $amountReceivedFormatted.\n- Expired: $exp.\n\n$pay\n\nHarap Dibayarkan sebelum waktu expired\nUntuk batal deposit ketik: batal.deposit.<invoice>\n\nTerima Kasih.",
                                 'reply_to_message_id' => $messageId,
                             ]);
-                        } else if ($nominal <= 10000) {
+                        } else if ($nominal < 10000) {
                             $this->telegram->sendMessage([
                                 'chat_id' => $chatId,
                                 'text' => 'Minimal Deposit Rp.10.000',
