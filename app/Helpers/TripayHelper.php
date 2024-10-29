@@ -56,11 +56,11 @@ class TripayHelper
         return json_decode($response->body(), true);
     }
 
-    public static function createDepositLocal($nominal, $method, array $orderItems, $chatId)
+    public static function createDepositLocal($nominal, $method, array $orderItems, $userTelId)
     {
         try {
             $mode = self::getMode();
-            $user = User::where('chat_id', $chatId)->first();
+            $user = User::where('user_tel_id', $userTelId)->first();
             $invoice = MyHelper::invoice($user->id, 'DPS');
             $signature = self::generateSignature($invoice, $nominal);
 

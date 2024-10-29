@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\DigiflazzHelper;
 use App\Helpers\TripayHelper;
 use App\Models\Deposit;
+use App\Models\Transaction;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Telegram\Bot\Api;
 
@@ -85,6 +88,7 @@ class CallbackController extends Controller
 
                     $this->telegram->sendMessage([
                         'chat_id' => $user->chat_id,
+                        'user_tel_id' => $user->user_tel_id,
                         'text' => "Hallo, $user->name\nTerima Kasih! Pembayaran telah kami terima.\nSaldo anda sekarang: $saldo\n\nDetail Deposit:\n\n- Invoice: $deposit->invoice\n- Metode: $deposit->method\n- Total: $totalFormatted\n- Fee: $feeFormatted\n- Nominal: $nominalFormatted\n- Saldo Diterima: $amountReceivedFormatted\n- Waktu Dibayarkan: $paidAt\n- Status: paid\n\nSilahkan Cek kembali saldo anda, kirim dengan format: Cek Saldo .",
                     ]);
                     break;
@@ -101,6 +105,7 @@ class CallbackController extends Controller
 
                     $this->telegram->sendMessage([
                         'chat_id' => $user->chat_id,
+                        'user_tel_id' => $user->user_tel_id,
                         'text' => "Hallo, $user->name.\nMohon Maaf! Pembayaran anda telah Expired atau Sudah Kadaluarsa\nSilahkan lalukan deposit ulang\n\nDetail Deposit:\n\n- Invoice: $deposit->invoice\n- Metode: $deposit->method\n- Total: $totalFormatted\n- Fee: $feeFormatted\n- Nominal: $nominalFormatted\n- Saldo Diterima: $amountReceivedFormatted\n- Expired: $exp\n- Status: failed\n\nTerima Kasih.",
                     ]);
                     break;
@@ -117,6 +122,7 @@ class CallbackController extends Controller
 
                     $this->telegram->sendMessage([
                         'chat_id' => $user->chat_id,
+                        'user_tel_id' => $user->user_tel_id,
                         'text' => "Hallo, $user->name\nMohon Maaf! Pembayaran anda gagal diproses.\nSilahkan lalukan deposit ulang.\n\nDetail Deposit:\n\n- Invoice: $deposit->invoice\n- Metode: $deposit->method\n- Total: $totalFormatted\n- Fee: $feeFormatted\n- Nominal: $nominalFormatted\n- Saldo Diterima: $amountReceivedFormatted\n- Expired: $exp\n- Status: failed\n\nTerima Kasih.",
                     ]);
                     break;
@@ -129,6 +135,48 @@ class CallbackController extends Controller
             }
 
             return Response::json(['success' => true]);
+        }
+    }
+
+    public function callbackDigiflazz(Request $request)
+    {
+        $postData = $request->getContent();
+        $secret = DigiflazzHelper::getWebhookSecret();
+        $signature = 'sha1=' . hash_hmac('sha1', $postData, $secret);
+
+        if ($request->header('X-Hub-Signature') === $signature) {
+            $eventData = $request->input('data');
+            Log::info('Webhook Event Data: ', ['data' => $eventData]);
+
+            $refId = $eventData['ref_id'];
+            $transaction = Transaction::where('invoice', $refId)->first();
+            $user = User::find($transaction->user_id);
+
+            // Check Status
+            $status = $eventData['status'];
+
+            if ($status === 'Gagal') {
+                $user->update([
+                    'saldo' => $user->saldo + $transaction->price
+                ]);
+            }
+
+            $transaction->update([
+                'message' => $eventData['message'],
+                'status' => $eventData['status'],
+                'sn' => $eventData['sn']
+            ]);
+
+            $this->telegram->sendMessage([
+                'chat_id' => $user->chat_id,
+                'user_tel_id' => $user->user_tel_id,
+                'text' => "$transaction->invoice/$transaction->product_name/$transaction->price/$transaction->target/$transaction->message/$transaction->sn/$transaction->status",
+            ]);
+
+            return response('Webhook received successfully', 200);
+        } else {
+            Log::warning('Invalid signature. Webhook ignored');
+            return response('Invalid signature', 403);
         }
     }
 }

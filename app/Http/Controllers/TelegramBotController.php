@@ -110,6 +110,11 @@ class TelegramBotController extends Controller
                         $keyboard = Keyboard::make()
                             ->row(
                                 [
+                                    Keyboard::button('Beli Pulsa')
+                                ]
+                            )
+                            ->row(
+                                [
                                     Keyboard::button('Pembelian'),
                                     Keyboard::button('Status Pembelian'),
                                 ]

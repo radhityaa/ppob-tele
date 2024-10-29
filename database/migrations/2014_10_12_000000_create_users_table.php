@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('chat_id')->unique();
+            $table->bigInteger('user_tel_id')->unique();
             $table->string('name');
             $table->string('phone');
             $table->string('shop_name');
