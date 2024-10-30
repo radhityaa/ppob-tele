@@ -89,7 +89,7 @@ class CallbackController extends Controller
                     $this->telegram->sendMessage([
                         'chat_id' => $user->chat_id,
                         'user_tel_id' => $user->user_tel_id,
-                        'text' => "Hallo, $user->name\nTerima Kasih! Pembayaran telah kami terima.\nSaldo anda sekarang: $saldo\n\nDetail Deposit:\n\n- Invoice: $deposit->invoice\n- Metode: $deposit->method\n- Total: $totalFormatted\n- Fee: $feeFormatted\n- Nominal: $nominalFormatted\n- Saldo Diterima: $amountReceivedFormatted\n- Waktu Dibayarkan: $paidAt\n- Status: paid\n\nSilahkan Cek kembali saldo anda, kirim dengan format: Cek Saldo .",
+                        'text' => "Hallo, $user->name\nTerima Kasih! Pembayaran telah kami terima.\nSaldo anda sekarang: $saldo\n\nDetail Deposit:\n\n- Invoice: $deposit->invoice\n- Metode: $deposit->method\n- Total: $totalFormatted\n- Fee: $feeFormatted\n- Nominal: $nominalFormatted\n- Saldo Diterima: $amountReceivedFormatted\n- Waktu Dibayarkan: $paidAt\n- Status: paid\n\nSilahkan Cek kembali saldo anda, kirim dengan format: /saldo .",
                     ]);
                     break;
 
