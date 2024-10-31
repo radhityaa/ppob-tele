@@ -155,7 +155,7 @@ class CallbackController extends Controller
             // Check Status
             $rc = $eventData['rc'];
 
-            if ($rc != "00") {
+            if ($rc != "00" || $rc != "03") {
                 $price = number_format($transaction->price, 0, '.', '.');
 
                 $this->telegram->sendMessage([
