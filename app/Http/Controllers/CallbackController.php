@@ -155,7 +155,7 @@ class CallbackController extends Controller
             // Check Status
             $status = $eventData['status'];
 
-            if ($status === "Gagal" && !$status === "Pending") {
+            if ($status === "Gagal" && $status !== "Pending") {
                 $price = number_format($transaction->price, 0, '.', '.');
 
                 $this->telegram->sendMessage([
