@@ -178,7 +178,7 @@ class CallbackController extends Controller
             $this->telegram->sendMessage([
                 'chat_id' => $user->chat_id,
                 'user_tel_id' => $user->user_tel_id,
-                'text' => "Transaksi $transaction->status!\n\n$transaction->invoice/$transaction->product_name/$transaction->price/$transaction->target/$transaction->message/$transaction->sn/$transaction->status",
+                'text' => "Transaksi $transaction->status!\n\n$transaction->invoice/$transaction->product_name/$transaction->price/$transaction->target/$transaction->message/$transaction->sn/Status: $transaction->status",
             ]);
 
             return response('Webhook received successfully', 200);
