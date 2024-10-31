@@ -156,6 +156,14 @@ class CallbackController extends Controller
             $rc = $eventData['rc'];
 
             if ($rc != "00") {
+                $price = number_format($transaction->price, 0, '.', '.');
+
+                $this->telegram->sendMessage([
+                    'chat_id' => $user->chat_id,
+                    'user_tel_id' => $user->user_tel_id,
+                    'text' => "Saldo dikembalikan Rp.$price",
+                ]);
+
                 $user->update([
                     'saldo' => $user->saldo + $transaction->price
                 ]);

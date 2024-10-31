@@ -44,7 +44,6 @@ class TransactionController extends Controller
             ]);
         }
 
-
         if ($mode === 'dev') {
             $data = [
                 'username' => $username,
@@ -71,14 +70,17 @@ class TransactionController extends Controller
 
         $result = DigiflazzHelper::transaction('transaction', $data);
 
-        // if (isset($result->data)) {
-        //     if (isset($result->data->rc) && $result->data->rc !== "00") {
-        //         return response()->json([
-        //             'success' => false,
-        //             'message' => $result->data->message ?? "Terjadi kesalahan saat melakukan transaksi.",
-        //         ], 400);
-        //     }
-        // }
+        if (isset($result->data)) {
+            if (isset($result->data->rc) && $result->data->rc !== "00") {
+                $price = number_format($product->price, 0, '.', '.');
+
+                $this->telegram->sendMessage([
+                    'chat_id' => $user->chat_id,
+                    'user_tel_id' => $user->user_tel_id,
+                    'text' => "Saldo dikembalikan Rp.$price",
+                ]);
+            }
+        }
 
         $result = Transaction::create([
             'user_id' => $user->id,
