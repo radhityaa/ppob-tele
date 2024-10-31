@@ -34,7 +34,7 @@
             <span class="menu-header-text">Riwayat</span>
         </li>
         <li class="menu-item {{ request()->is('histories/transaction/*') ? 'active' : '' }}">
-            <a href="index.html" class="menu-link">
+            <a href="{{ route('histories.transaction.login') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-history"></i>
                 <div>Riwayat Transaksi</div>
             </a>

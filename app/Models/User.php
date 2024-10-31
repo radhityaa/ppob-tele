@@ -20,5 +20,6 @@ class User extends Authenticatable
         'shop_name',
         'status',
         'saldo',
+        'user_token'
     ];
 }

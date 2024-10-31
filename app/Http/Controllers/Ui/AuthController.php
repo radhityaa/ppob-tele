@@ -32,7 +32,6 @@ class AuthController extends Controller
             return redirect(route('dashboard'));
         }
 
-        // alert()->success('Title', 'Lorem Lorem Lorem');
         Alert::error('Login Gagal', 'Nomor HP atau User ID Salah!');
         return redirect()->back();
     }

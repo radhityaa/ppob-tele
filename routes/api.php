@@ -18,6 +18,7 @@ Route::middleware('verifyToken')->group(function () {
         Route::prefix('users')->group(function () {
             Route::post('register', [UserApiController::class, 'register']);
             Route::post('check', [UserApiController::class, 'check']);
+            Route::post('check-token', [UserApiController::class, 'checkToken']);
             Route::post('saldo', [UserApiController::class, 'saldo']);
             Route::post('deposit', [UserApiController::class, 'deposit']);
         });

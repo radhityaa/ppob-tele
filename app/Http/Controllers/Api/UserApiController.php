@@ -9,6 +9,8 @@ use App\Models\PaymentMethod;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
+use Ramsey\Uuid\Uuid;
 
 class UserApiController extends Controller
 {
@@ -46,6 +48,31 @@ class UserApiController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'User Resgistered'
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'User Not Found'
+        ]);
+    }
+
+    public function checkToken(Request $request)
+    {
+        $userTelId = $request->user_tel_id;
+        $user = User::where('user_tel_id', $userTelId)->first();
+
+        if ($user) {
+            if (!$user->user_token) {
+                $user->update([
+                    'user_token' => Uuid::uuid4()
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Success',
+                'data' => $user->user_token
             ]);
         }
 

@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Helpers\DigiflazzHelper;
 use App\Helpers\MyHelper;
+use App\Http\Resources\AjaxTransactionResource;
 use App\Models\Digiflazz;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
+use RealRashid\SweetAlert\Facades\Alert;
 use Telegram\Bot\Api;
 
 class TransactionController extends Controller
@@ -133,17 +136,45 @@ class TransactionController extends Controller
         ]);
     }
 
-    public function histories(Request $request)
+    public function loginHistories(Request $request)
     {
-        $userTelId = $request->user_tel_id;
+        return view('histories.transaction');
+    }
 
-        $user = User::where('user_tel_id', $userTelId)->first();
-        $transaction = Transaction::where('user_id', $user->id)->latest()->limit(10)->get();
+    public function loginHistoriesAction(Request $request)
+    {
+        $request->validate([
+            'user_token' => 'required'
+        ]);
+
+        $user = User::where('user_token', $request->user_token)->first();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User Token Salah!'
+            ], 400);
+        }
 
         return response()->json([
             'success' => true,
-            'message' => 'Riwayat transaksi',
-            'data' => $transaction
+            'message' => 'Login Berhasil!',
         ]);
+    }
+
+    public function histories($token)
+    {
+        $user = User::where('user_token', $token)->first();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User Token Salah!'
+            ], 400);
+        }
+
+        $transactions = Transaction::where('user_id', $user->id)->orderBy('created_at', 'DESC')->get();
+
+        return response()->json(AjaxTransactionResource::collection($transactions));
     }
 }
