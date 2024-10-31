@@ -40,7 +40,7 @@ class TransactionController extends Controller
         if ($user->saldo < $product->price) {
             return response()->json([
                 'success' => false,
-                'message' => 'Saldo tidak mencukupi. Sisa Saldo: Rp.' . $user->saldo
+                'message' => 'Saldo tidak mencukupi. Sisa Saldo: Rp.' . number_format($user->saldo, 0, '.', '.')
             ]);
         }
 
@@ -71,7 +71,7 @@ class TransactionController extends Controller
         $result = DigiflazzHelper::transaction('transaction', $data);
 
         if (isset($result->data)) {
-            if (isset($result->data->rc) && $result->data->rc !== "00" || $result->data->rc !== "03") {
+            if (isset($result->data->rc) && $result->data->rc !== "00" && $result->data->rc !== "03") {
                 $price = number_format($product->price, 0, '.', '.');
 
                 $this->telegram->sendMessage([
