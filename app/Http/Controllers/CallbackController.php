@@ -153,9 +153,9 @@ class CallbackController extends Controller
             $user = User::find($transaction->user_id);
 
             // Check Status
-            $rc = $eventData['rc'];
+            $status = $eventData['status'];
 
-            if ($rc != "00" || $rc != "03") {
+            if ($status === "Gagal" || !$status === "Pending") {
                 $price = number_format($transaction->price, 0, '.', '.');
 
                 $this->telegram->sendMessage([
