@@ -153,9 +153,9 @@ class CallbackController extends Controller
             $user = User::find($transaction->user_id);
 
             // Check Status
-            $status = $eventData['status'];
+            $rc = $eventData['rc'];
 
-            if ($status === 'Gagal') {
+            if ($rc != "00") {
                 $user->update([
                     'saldo' => $user->saldo + $transaction->price
                 ]);

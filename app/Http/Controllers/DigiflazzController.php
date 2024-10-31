@@ -188,8 +188,7 @@ class DigiflazzController extends Controller
                     }
                 }
 
-                // Hapus produk yang tidak ada dalam respons terbaru
-                // Digiflazz::whereNotIn('buyer_sku_code', $digiflazzSkuCodes)->delete();
+                Digiflazz::whereNotIn('buyer_sku_code', $digiflazzSkuCodes)->delete();
 
                 // Kirim notifikasi ke Telegram
                 $date = now()->locale('id')->translatedFormat('l, d F Y');
@@ -219,26 +218,6 @@ class DigiflazzController extends Controller
                         'text' => $messageInsert
                     ]);
                 }
-
-                // if ($updatedProducts > 0 && $insertedProducts > 0) {
-                //     if ($updatedProducts > 0) {
-                //         $message = "Update produk tanggal " . now();
-                //         foreach ($updatedProducts as $product) {
-                //             $message .= "- Kode: " . $product['buyer_sku_code'] . ", Produk: " . $product['product_name'] . ", Harga: " . $product['price'] . ", Status: " . $product['seller_product_status'] . "\n";
-                //         }
-                //     } else if ($insertedProducts > 0) {
-                //         $message = "Produk Baru per tanggal " . now();
-                //         foreach ($insertedProducts as $product) {
-                //             $message .= "- Kode: " . $product['buyer_sku_code'] . ", Produk: " . $product['product_name'] . ", Harga: " . $product['price'] . ", Status: " . $product['seller_product_status'] . "\n";
-                //         }
-                //     }
-
-                //     $this->telegram->sendMessage([
-                //         'chat_id' => env('TELEGRAM_CHANNEL_ID'),
-                //         'text' => $message
-                //     ]);
-                // }
-
 
                 return response()->json([
                     'success' => true,
