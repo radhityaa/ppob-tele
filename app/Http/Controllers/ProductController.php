@@ -7,9 +7,9 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function list()
+    public function priceListPrabayar()
     {
-        return view('price-list');
+        return view('price-list.prabayar');
     }
 
     public function getProvider(Request $request)

@@ -22,28 +22,47 @@
         </li> --}}
 
         <!-- Price List -->
-        <li class="menu-item {{ request()->is('price-list*') ? 'active' : '' }}">
-            <a href="{{ route('products.list') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-list-ul"></i>
+        <li class="menu-item {{ request()->is('price-list/*') ? 'active open' : '' }}">
+            <a href="javascript:void(0)" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icon bx bx-list-ul"></i>
                 <div>Daftar Harga</div>
             </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ request()->is('price-list/prabayar*') ? 'active' : '' }}">
+                    <a href="{{ route('price.list.prabayar') }}" class="menu-link">
+                        <div>Prabayar</div>
+                    </a>
+                </li>
+            </ul>
         </li>
 
-        <!-- Histories -->
-        <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">Riwayat</span>
-        </li>
-        <li class="menu-item {{ request()->is('histories/transaction/*') ? 'active' : '' }}">
-            <a href="{{ route('histories.transaction.login') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-history"></i>
+        {{-- Histories Transaksi --}}
+        <li class="menu-item {{ request()->is('histories/transaction/*') ? 'active open' : '' }}">
+            <a href="javascript:void(0)" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icon bx bx-history"></i>
                 <div>Riwayat Transaksi</div>
             </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ request()->is('histories/transaction/prabayar*') ? 'active' : '' }}">
+                    <a href="{{ route('history.transaction.prabayar') }}" class="menu-link">
+                        <div>Prabayar</div>
+                    </a>
+                </li>
+                {{-- <li class="menu-item {{ request()->is('histories/transaction/*') ? 'active' : '' }}">
+                    <a href="{{ route('history.transaction.prabayar') }}" class="menu-link">
+                        <div>Pascabayar</div>
+                    </a>
+                </li> --}}
+            </ul>
         </li>
-        <li class="menu-item {{ request()->is('histories/deposit/*') ? 'active' : '' }}">
+
+        {{-- Histories Deposit --}}
+        {{-- <li class="menu-item {{ request()->is('histories/deposit/*') ? 'active' : '' }}">
             <a href="index.html" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-history"></i>
+                <i class="menu-icon tf-icons bx bx-wallet"></i>
                 <div>Riwayat Deposit</div>
             </a>
-        </li>
+        </li> --}}
+
     </ul>
 </aside>

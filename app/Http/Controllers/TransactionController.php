@@ -136,12 +136,12 @@ class TransactionController extends Controller
         ]);
     }
 
-    public function loginHistories(Request $request)
+    public function historyPrabayar()
     {
-        return view('histories.transaction');
+        return view('histories.transactions.prabayar');
     }
 
-    public function loginHistoriesAction(Request $request)
+    public function historyPrabayarAction(Request $request)
     {
         $request->validate([
             'user_token' => 'required'
@@ -162,7 +162,7 @@ class TransactionController extends Controller
         ]);
     }
 
-    public function histories($token)
+    public function getHistoryPrabayar($token)
     {
         $user = User::where('user_token', $token)->first();
 

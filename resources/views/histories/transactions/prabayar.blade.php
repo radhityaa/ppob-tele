@@ -5,17 +5,8 @@
     <div class="login-el">
         <div class="card">
             <div class="card-body">
-                <!-- Logo -->
-                <div class="app-brand justify-content-center mb-4">
-                    <a href="#" class="app-brand-link gap-2">
-                        <img src="{{ asset('assets/img/logo.png') }}" alt="{{ config('app.name') }}" width="50"
-                            height="50">
-                        <span class="app-brand-text demo text-body fw-bolder text-uppercase">Ayasya Tech</span>
-                    </a>
-                </div>
-                <!-- /Logo -->
-                <h4 class="mb-2 text-center">Riwayat Transaksi</h4>
-                <p class="mb-4">Silahkan Login telebih dahulu untuk melihat Riwayat Transaksi</p>
+                <h4 class="mb-2">Riwayat Transaksi Prabayar</h4>
+                <p class="mb-4">Silahkan Login telebih dahulu untuk melihat Riwayat Transaksi Prabayar</p>
 
                 <form id="formAuthentication" class="mb-3" method="POST">
                     @csrf
@@ -61,7 +52,7 @@
                 let userToken = $('#user_token').val()
 
                 $.ajax({
-                    url: '{{ route('histories.transaction.login') }}',
+                    url: '{{ route('history.transaction.prabayar') }}',
                     method: 'POST',
                     data: {
                         user_token: userToken
@@ -77,7 +68,7 @@
                             icon: "success"
                         });
 
-                        let url = "{!! route('histories.transaction', ':token') !!}"
+                        let url = "{!! route('get.history.transaction', ':token') !!}"
                         url = url.replace(':token', userToken)
 
                         $.ajax({

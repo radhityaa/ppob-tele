@@ -8,8 +8,17 @@
 
     <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
         <div class="navbar-nav align-items-center">
-            <div class="nav-item d-flex align-items-center mt-3">
-                <h5>PT. Ayasya Tech Indonesia</h5>
+            <div class="nav-item d-flex align-items-center">
+                <!-- Logo -->
+                <div class="app-brand justify-content-center">
+                    <a href="#" class="app-brand-link gap-2">
+                        <img src="{{ asset('assets/img/logo.png') }}" alt="{{ config('app.name') }}" width="40"
+                            height="40">
+                        <span class="app-brand-text demo text-body fw-bolder text-uppercase"
+                            style="font-size: 20px;">Ayasya Tech</span>
+                    </a>
+                </div>
+                <!-- /Logo -->
             </div>
         </div>
     </div>
