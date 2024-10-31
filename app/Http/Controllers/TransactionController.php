@@ -71,8 +71,12 @@ class TransactionController extends Controller
         $result = DigiflazzHelper::transaction('transaction', $data);
 
         if (isset($result->data)) {
-            if (isset($result->data->status) && $result->data->status !== "Gagal" || $result->data->status !== "Pending") {
+            if (isset($result->data->status) && $result->data->status !== "Gagal" && $result->data->status !== "Pending") {
                 $price = number_format($product->price, 0, '.', '.');
+
+                $user->update([
+                    'saldo' => $user->saldo + $product->price
+                ]);
 
                 $this->telegram->sendMessage([
                     'chat_id' => $user->chat_id,
