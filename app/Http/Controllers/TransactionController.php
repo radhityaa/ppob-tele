@@ -71,7 +71,7 @@ class TransactionController extends Controller
         $result = DigiflazzHelper::transaction('transaction', $data);
 
         if (isset($result->data)) {
-            if (isset($result->data->rc) && $result->data->rc !== "00") {
+            if (isset($result->data->rc) && $result->data->rc !== "00" || $result->data->rc !== "03") {
                 $price = number_format($product->price, 0, '.', '.');
 
                 $this->telegram->sendMessage([
