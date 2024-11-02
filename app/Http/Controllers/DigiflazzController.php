@@ -191,33 +191,33 @@ class DigiflazzController extends Controller
                 Digiflazz::whereNotIn('buyer_sku_code', $digiflazzSkuCodes)->delete();
 
                 // Kirim notifikasi ke Telegram
-                $date = now()->locale('id')->translatedFormat('l, d F Y');
+                // $date = now()->locale('id')->translatedFormat('l, d F Y');
 
-                if (!empty($updatedProducts)) {
-                    $messageUpdate = "Update produk tanggal " . $date . "\n\n";
-                    foreach ($updatedProducts as $product) {
-                        $status = $product['seller_product_status'] ? 'Normal' : 'Gangguan';
-                        $messageUpdate .= "- " . $product['category'] . " " . $product['brand'] . "\n- Kode: " . $product['buyer_sku_code'] . "\n- Produk: " . $product['product_name'] . "\n- Harga: " . $product['price'] . "\n- Status: " . $status . "\n\n";
-                    }
+                // if (!empty($updatedProducts)) {
+                //     $messageUpdate = "Update produk tanggal " . $date . "\n\n";
+                //     foreach ($updatedProducts as $product) {
+                //         $status = $product['seller_product_status'] ? 'Normal' : 'Gangguan';
+                //         $messageUpdate .= "- " . $product['category'] . " " . $product['brand'] . "\n- Kode: " . $product['buyer_sku_code'] . "\n- Produk: " . $product['product_name'] . "\n- Harga: " . $product['price'] . "\n- Status: " . $status . "\n\n";
+                //     }
 
-                    $this->telegram->sendMessage([
-                        'chat_id' => env('TELEGRAM_CHANNEL_ID'),
-                        'text' => $messageUpdate
-                    ]);
-                }
+                //     $this->telegram->sendMessage([
+                //         'chat_id' => env('TELEGRAM_CHANNEL_ID'),
+                //         'text' => $messageUpdate
+                //     ]);
+                // }
 
-                if (!empty($insertedProducts)) {
-                    $messageInsert = "Produk baru per tanggal " . $date . "\n\n";
-                    foreach ($insertedProducts as $product) {
-                        $status = $product['seller_product_status'] ? 'Normal' : 'Gangguan';
-                        $messageInsert .= "- " . $product['category'] . " " . $product['brand'] . "\n- Kode: " . $product['buyer_sku_code'] . "\n- Produk: " . $product['product_name'] . "\n- Harga: " . $product['price'] . "\n- Status: " . $status . "\n\n";
-                    }
+                // if (!empty($insertedProducts)) {
+                //     $messageInsert = "Produk baru per tanggal " . $date . "\n\n";
+                //     foreach ($insertedProducts as $product) {
+                //         $status = $product['seller_product_status'] ? 'Normal' : 'Gangguan';
+                //         $messageInsert .= "- " . $product['category'] . " " . $product['brand'] . "\n- Kode: " . $product['buyer_sku_code'] . "\n- Produk: " . $product['product_name'] . "\n- Harga: " . $product['price'] . "\n- Status: " . $status . "\n\n";
+                //     }
 
-                    $this->telegram->sendMessage([
-                        'chat_id' => env('TELEGRAM_CHANNEL_ID'),
-                        'text' => $messageInsert
-                    ]);
-                }
+                //     $this->telegram->sendMessage([
+                //         'chat_id' => env('TELEGRAM_CHANNEL_ID'),
+                //         'text' => $messageInsert
+                //     ]);
+                // }
 
                 return response()->json([
                     'success' => true,
