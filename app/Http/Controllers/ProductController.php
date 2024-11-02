@@ -38,7 +38,7 @@ class ProductController extends Controller
             return abort(404, 'Not Found');
         }
 
-        $data = Digiflazz::where('category', $request->service)->where('brand', $request->provider)->where('type', $request->category)->get();
+        $data = Digiflazz::where('category', $request->service)->where('brand', $request->provider)->where('type', $request->category)->orderBy('price', 'ASC')->get();
         return response()->json($data);
     }
 }
