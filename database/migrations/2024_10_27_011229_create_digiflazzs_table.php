@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('brand');
             $table->string('type');
             $table->string('seller_name');
-            $table->string('price');
+            $table->double('price');
             $table->string('buyer_sku_code');
             $table->string('buyer_product_status');
             $table->integer('seller_product_status');
